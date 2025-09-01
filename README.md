@@ -58,7 +58,7 @@ Upload a text file with one username per line and enter your `source_id` and `to
 
 These two pieces of information tell X which account is doing the blocking.
 
-- **source_id** – This is your numeric X user ID. To find it, visit <https://x.com/settings/your_twitter_data> and look for **User ID** in the *Account* section.
+- **source_id** – This is your numeric X user ID. To find it, visit <https://x.com/settings/your_twitter_data> and look for **User ID** in the *Account* section, or use <https://get-id-x.foundtt.com/en/> to look it up.
 - **token** – This is the `auth_token` cookie from your browser. With X open in your browser:
   1. Press <kbd>F12</kbd> to open the developer tools.
   2. Go to the **Application** (or **Storage**) tab and open the **Cookies** entry for `https://x.com`.
