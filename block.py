@@ -1,4 +1,13 @@
 from typing import Dict, Iterable
+from io import StringIO
+
+
+# TODO: Fill this list with the usernames from the provided images
+SOL_SHILLS = [
+    # Example placeholders
+    "exampleuser1",
+    "exampleuser2",
+]
 
 
 def block_from_file(
@@ -22,3 +31,10 @@ def block_from_file(
         # Placeholder: real blocking logic would go here
         results[username] = "blocked"
     return results
+
+
+def block_sol_shills(source_id: str, token: str) -> Dict[str, str]:
+    """Block the preset list of SOL shill usernames."""
+
+    buffer = StringIO("\n".join(SOL_SHILLS))
+    return block_from_file(buffer, source_id, token)
