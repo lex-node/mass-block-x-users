@@ -49,7 +49,7 @@ def test_block_from_text_stream(monkeypatch):
 
     assert len(calls) == 2
     for call in calls:
-        assert call["url"] == "https://api.x.com/1.1/blocks/create.json"
+        assert call["url"] == "https://api.twitter.com/1.1/blocks/create.json"
         assert call["cookies"] == {"auth_token": "token"}
         assert call["json"]["source_id"] == "id"
         assert call["json"]["screen_name"] in {"alice", "bob"}

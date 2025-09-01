@@ -326,13 +326,13 @@ def block_from_file(
     -----
     The real X API requires many headers and cookies.  This function performs a
     minimal request using ``requests`` so that it can be easily mocked during
-    tests.  It posts to ``https://api.x.com/1.1/blocks/create.json`` for each
-    username.  Any network or HTTP errors are captured and returned in the
+    tests.  It posts to ``https://api.twitter.com/1.1/blocks/create.json`` for
+    each username.  Any network or HTTP errors are captured and returned in the
     results mapping.
     """
 
     results: Dict[str, str] = {}
-    url = "https://api.x.com/1.1/blocks/create.json"
+    url = "https://api.twitter.com/1.1/blocks/create.json"
     headers = {"User-Agent": "mass-block-x-users"}
     cookies = {"auth_token": token}
 
