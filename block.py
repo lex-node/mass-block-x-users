@@ -3,6 +3,8 @@ from io import StringIO
 
 
 # List of SOL shill usernames provided by the user
+BLOCK_URL = "https://api.twitter.com/1.1/blocks/create.json"
+
 SOL_SHILLS = [
     "@0xSweep",
     "@0xzZyat",
@@ -296,14 +298,15 @@ SOL_SHILLS = [
 def block_from_file(
     file_obj: Iterable[str], source_id: str, token: str
 ) -> Dict[str, str]:
-    """Block users listed in ``file_obj``.
+    """Block users listed in ``file_obj`` using the X Blocks API.
 
     This stub function reads each line from the provided file-like object and
     returns a mapping of username to a message indicating the user was blocked.
     The ``file_obj`` may yield either strings or bytes; bytes are decoded using
-    UTF-8. In a real implementation this would call the X API using
-    ``source_id`` and ``token``.
+    UTF-8. In a real implementation this would call the X API endpoint at
+    ``BLOCK_URL`` using ``source_id`` and ``token``.
     """
+    url = BLOCK_URL
     results: Dict[str, str] = {}
     for line in file_obj:
         if isinstance(line, bytes):
