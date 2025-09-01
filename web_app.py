@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template_string
-from block import block_from_file
+from block import block_from_file, block_sol_shills
 
 app = Flask(__name__)
 
@@ -13,6 +13,7 @@ FORM_TEMPLATE = """
   <label>Token: <input type="password" name="token" required></label><br>
   <input type="submit" value="Block">
 </form>
+<p>Or <a href="{{ url_for('block_sol_shills_route') }}">Block SOL Shills</a></p>
 """
 
 RESULT_TEMPLATE = """
@@ -38,6 +39,28 @@ def index():
         results = block_from_file(uploaded.stream, source_id, token)
         return render_template_string(RESULT_TEMPLATE, results=results)
     return render_template_string(FORM_TEMPLATE)
+
+
+SOL_SHILLS_TEMPLATE = """
+<!doctype html>
+<title>Block SOL Shills</title>
+<h1>Block SOL Shills</h1>
+<form method="post">
+  <label>Source ID: <input type="text" name="source_id" required></label><br>
+  <label>Token: <input type="password" name="token" required></label><br>
+  <input type="submit" value="Block SOL Shills">
+</form>
+"""
+
+
+@app.route('/block-sol-shills', methods=['GET', 'POST'])
+def block_sol_shills_route():
+    if request.method == 'POST':
+        source_id = request.form.get('source_id', '')
+        token = request.form.get('token', '')
+        results = block_sol_shills(source_id, token)
+        return render_template_string(RESULT_TEMPLATE, results=results)
+    return render_template_string(SOL_SHILLS_TEMPLATE)
 
 
 if __name__ == '__main__':

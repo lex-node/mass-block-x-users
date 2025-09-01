@@ -54,6 +54,8 @@ The server will start on http://localhost:5000/.
 In your browser visit http://localhost:5000/.
 Upload a text file with one username per line and enter your `source_id` and `token` from X. Submit the form to block each user and review the results.
 
+The home page also links to **Block SOL Shills**, which blocks a predefined set of usernames without uploading a file.
+
 ## Manual setup (optional)
 
 If you prefer to set up the environment yourself:
