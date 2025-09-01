@@ -20,6 +20,8 @@ def block_from_file(
     source_id: str | None = None,
     token: str | None = None,
     *,
+    ct0: str | None = None,
+    bearer_token: str | None = None,
     max_retries: int = 3,
     backoff: float = 1.0,
 ) -> Dict[str, str]:
@@ -35,6 +37,12 @@ def block_from_file(
     token:
         ``auth_token`` cookie from the user's X session. If ``None``, value is read
         from the ``AUTH_TOKEN`` environment variable.
+    ct0:
+        ``ct0`` cookie paired with the ``X-Csrf-Token`` header. If ``None``, value is
+        read from the ``CT0`` environment variable.
+    bearer_token:
+        OAuth2 bearer token used in the ``Authorization`` header. If ``None``, value
+        is read from the ``BEARER_TOKEN`` environment variable.
     max_retries:
         Number of attempts for a request when rate limited (HTTP 429).
     backoff:
@@ -56,9 +64,18 @@ def block_from_file(
 
     source_id = source_id or os.getenv("SOURCE_ID", "")
     token = token or os.getenv("AUTH_TOKEN", "")
+    ct0 = ct0 or os.getenv("CT0", "")
+    bearer_token = bearer_token or os.getenv("BEARER_TOKEN", "")
     results: Dict[str, str] = {}
-    headers = {"User-Agent": "mass-block-x-users"}
-    cookies = {"auth_token": token}
+    headers = {
+        "User-Agent": "mass-block-x-users",
+        "Authorization": f"Bearer {bearer_token}",
+        "X-Csrf-Token": ct0,
+        "x-twitter-auth-type": "OAuth2Session",
+        "x-twitter-active-user": "yes",
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
+    cookies = {"auth_token": token, "ct0": ct0}
 
     for line in file_obj:
         if isinstance(line, bytes):
@@ -74,7 +91,7 @@ def block_from_file(
         while True:
             try:
                 response = requests.post(
-                    BLOCK_URL, json=payload, headers=headers, cookies=cookies, timeout=10
+                    BLOCK_URL, data=payload, headers=headers, cookies=cookies, timeout=10
                 )
             except requests.RequestException as exc:  # pragma: no cover - network
                 results[raw_username] = f"error: {exc}"
@@ -100,9 +117,19 @@ def block_from_file(
 
 
 def block_sol_shills(
-    source_id: str | None = None, token: str | None = None
+    source_id: str | None = None,
+    token: str | None = None,
+    *,
+    ct0: str | None = None,
+    bearer_token: str | None = None,
 ) -> Dict[str, str]:
     """Block the preset list of SOL shill usernames."""
 
     buffer = StringIO("\n".join(SOL_SHILLS))
-    return block_from_file(buffer, source_id, token)
+    return block_from_file(
+        buffer,
+        source_id,
+        token,
+        ct0=ct0,
+        bearer_token=bearer_token,
+    )
