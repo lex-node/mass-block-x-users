@@ -82,3 +82,37 @@ def test_block_sol_shills(monkeypatch):
     sent_usernames = {call["json"]["screen_name"] for call in calls}
     assert sent_usernames == {name.lstrip("@") for name in block.SOL_SHILLS}
 
+
+def test_auth_error(monkeypatch):
+    def fake_post(url, json=None, headers=None, cookies=None, timeout=None):
+        return DummyResponse(401)
+
+    monkeypatch.setattr(block.requests, "post", fake_post)
+    file_obj = io.StringIO("alice\n")
+    result = block.block_from_file(file_obj, "id", "token")
+    assert result == {"alice": "unauthorized"}
+
+
+def test_rate_limit_retry(monkeypatch):
+    responses = [DummyResponse(429), DummyResponse(200)]
+
+    def fake_post(url, json=None, headers=None, cookies=None, timeout=None):
+        return responses.pop(0)
+
+    monkeypatch.setattr(block.requests, "post", fake_post)
+    monkeypatch.setattr(block.time, "sleep", lambda s: None)
+    file_obj = io.StringIO("alice\n")
+    result = block.block_from_file(file_obj, "id", "token", max_retries=2, backoff=0)
+    assert result == {"alice": "blocked"}
+
+
+def test_rate_limit_gives_up(monkeypatch):
+    def fake_post(url, json=None, headers=None, cookies=None, timeout=None):
+        return DummyResponse(429)
+
+    monkeypatch.setattr(block.requests, "post", fake_post)
+    monkeypatch.setattr(block.time, "sleep", lambda s: None)
+    file_obj = io.StringIO("alice\n")
+    result = block.block_from_file(file_obj, "id", "token", max_retries=2, backoff=0)
+    assert result == {"alice": "rate limited"}
+

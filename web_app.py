@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template_string
 from block import block_from_file, block_sol_shills
+import os
 
 app = Flask(__name__)
 
@@ -9,8 +10,8 @@ FORM_TEMPLATE = """
 <h1>Upload user list</h1>
 <form method="post" enctype="multipart/form-data">
   <label>Username file: <input type="file" name="userfile" required></label><br>
-  <label>Source ID: <input type="text" name="source_id" required></label><br>
-  <label>Token: <input type="password" name="token" required></label><br>
+  <label>Source ID: <input type="text" name="source_id"></label><br>
+  <label>Token: <input type="password" name="token"></label><br>
   <input type="submit" value="Block">
 </form>
 <p>Or <a href="{{ url_for('block_sol_shills_route') }}">Block SOL Shills</a></p>
@@ -32,8 +33,8 @@ RESULT_TEMPLATE = """
 def index():
     if request.method == 'POST':
         uploaded = request.files.get('userfile')
-        source_id = request.form.get('source_id', '')
-        token = request.form.get('token', '')
+        source_id = request.form.get('source_id') or os.getenv('SOURCE_ID', '')
+        token = request.form.get('token') or os.getenv('AUTH_TOKEN', '')
         if not uploaded:
             return "No file uploaded", 400
         results = block_from_file(uploaded.stream, source_id, token)
@@ -46,8 +47,8 @@ SOL_SHILLS_TEMPLATE = """
 <title>Block SOL Shills</title>
 <h1>Block SOL Shills</h1>
 <form method="post">
-  <label>Source ID: <input type="text" name="source_id" required></label><br>
-  <label>Token: <input type="password" name="token" required></label><br>
+  <label>Source ID: <input type="text" name="source_id"></label><br>
+  <label>Token: <input type="password" name="token"></label><br>
   <input type="submit" value="Block SOL Shills">
 </form>
 """
@@ -56,8 +57,8 @@ SOL_SHILLS_TEMPLATE = """
 @app.route('/block-sol-shills', methods=['GET', 'POST'])
 def block_sol_shills_route():
     if request.method == 'POST':
-        source_id = request.form.get('source_id', '')
-        token = request.form.get('token', '')
+        source_id = request.form.get('source_id') or os.getenv('SOURCE_ID', '')
+        token = request.form.get('token') or os.getenv('AUTH_TOKEN', '')
         results = block_sol_shills(source_id, token)
         return render_template_string(RESULT_TEMPLATE, results=results)
     return render_template_string(SOL_SHILLS_TEMPLATE)
