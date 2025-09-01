@@ -6,7 +6,8 @@ VIBE-CODED APP, EXPERIMENTAL, UNAUDITED, NON-SECURE, NO REPRESENTATIONS/WARRANTI
 
 ## Getting started (no experience required)
 
-Follow these steps to install and run the app on your computer.
+Follow these steps to install and run the app on your computer. All commands assume
+you have installed the Python dependencies with `pip install -r requirements.txt`.
 
 ### 1. Install prerequisites
 
@@ -55,6 +56,8 @@ The server will start on http://localhost:5000/.
 
 In your browser visit http://localhost:5000/.
 Upload a text file with one username per line and enter your `source_id` and `token` from X. Submit the form to block each user and review the results.
+
+You can alternatively set the `SOURCE_ID` and `AUTH_TOKEN` environment variables before launching the app and leave the fields blank in the form.
 
 #### Finding your `source_id` and `token`
 
@@ -110,6 +113,12 @@ Run the unit tests with:
 
 ```bash
 pytest
+```
+
+Install required packages first with:
+
+```bash
+pip install -r requirements.txt
 ```
 
 ## Docker
