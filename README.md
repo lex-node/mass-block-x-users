@@ -2,23 +2,55 @@
 
 Mass block a list of X users.
 
-## Web application
+## Installation
 
-A simple Flask app provides a form to upload a list of usernames along with a
-`source_id` and `token`. On submission it calls `block_from_file` and displays
-the result for each user.
+1. Clone the repository and change into it:
 
-### Run with Flask
+   ```bash
+   git clone <repo-url>
+   cd mass-block-x-users
+   ```
 
-```bash
-pip install -r requirements.txt
-export FLASK_APP=web_app.py
-flask run
-```
+2. (Optional) Create and activate a virtual environment:
 
-The application will be available at http://localhost:5000/
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   ```
 
-### Tests
+3. Install the dependencies:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+## Running the web application
+
+1. Set the Flask entry point:
+
+   ```bash
+   export FLASK_APP=web_app.py
+   ```
+
+2. Start the development server:
+
+   ```bash
+   flask run
+   ```
+
+   The app will be available at http://localhost:5000/.
+
+3. In your browser, upload a text file containing one username per line and
+   provide the required `source_id` and `token`. Submit the form to block the
+   listed users. A results page will display the status for each user.
+
+   You can also run the app directly with Python:
+
+   ```bash
+   python web_app.py
+   ```
+
+## Tests
 
 Run the unit tests with:
 
@@ -26,11 +58,14 @@ Run the unit tests with:
 pytest
 ```
 
-### Docker
+## Docker
+
+Build and run the container:
 
 ```bash
 docker build -t mass-block-x-users .
-docker run -p 5000:5000 mass-block-x-users
+docker run --rm -p 5000:5000 mass-block-x-users
 ```
 
-The container exposes the app on port 5000.
+The application is exposed on port 5000.
+
