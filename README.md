@@ -24,6 +24,18 @@ Mass block a list of X users.
    pip install -r requirements.txt
    ```
 
+### Windows
+
+Use the following commands in PowerShell to set up the project on Windows:
+
+```powershell
+git clone <repo-url>
+cd mass-block-x-users
+py -3 -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+```
+
 ## Running the web application
 
 1. Set the Flask entry point:
@@ -49,6 +61,23 @@ Mass block a list of X users.
    ```bash
    python web_app.py
    ```
+
+### Windows
+
+On Windows, configure and run the application with:
+
+```powershell
+set FLASK_APP=web_app.py
+flask run
+```
+
+The app will be available at http://localhost:5000/.
+
+You can also run the app directly with:
+
+```powershell
+python web_app.py
+```
 
 ## Tests
 
