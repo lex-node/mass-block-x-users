@@ -54,6 +54,18 @@ The server will start on http://localhost:5000/.
 In your browser visit http://localhost:5000/.
 Upload a text file with one username per line and enter your `source_id` and `token` from X. Submit the form to block each user and review the results.
 
+#### Finding your `source_id` and `token`
+
+These two pieces of information tell X which account is doing the blocking.
+
+- **source_id** – This is your numeric X user ID. To find it, visit <https://x.com/settings/your_twitter_data> and look for **User ID** in the *Account* section.
+- **token** – This is the `auth_token` cookie from your browser. With X open in your browser:
+  1. Press <kbd>F12</kbd> to open the developer tools.
+  2. Go to the **Application** (or **Storage**) tab and open the **Cookies** entry for `https://x.com`.
+  3. Find the cookie named `auth_token` and copy its value.
+
+Keep this token secret; anyone with it can act on your X account.
+
 The home page also links to **Block SOL Shills**, which blocks a predefined set of usernames without uploading a file.
 
 ## Manual setup (optional)
