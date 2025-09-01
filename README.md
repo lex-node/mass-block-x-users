@@ -2,6 +2,8 @@
 
 Mass block a list of X users.
 
+VIBE-CODED APP, EXPERIMENTAL, UNAUDITED, NON-SECURE, NO REPRESENTATIONS/WARRANTIES GIVEN, AS-IS/WHERE-IS, USE AT YOUR OWN RISK 
+
 ## Getting started (no experience required)
 
 Follow these steps to install and run the app on your computer.
