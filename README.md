@@ -2,82 +2,91 @@
 
 Mass block a list of X users.
 
-## Installation
+## Getting started (no experience required)
 
-1. Clone the repository and change into it:
+Follow these steps to install and run the app on your computer.
 
-   ```bash
-   git clone <repo-url>
-   cd mass-block-x-users
-   ```
+### 1. Install prerequisites
 
-2. (Optional) Create and activate a virtual environment:
+- **Git** – download from https://git-scm.com/downloads and install it.
+- **Python 3** – download from https://www.python.org/downloads/ and install.
+
+### 2. Clone this repository
+
+Open a terminal (macOS/Linux) or PowerShell (Windows) and run:
+
+```bash
+git clone https://github.com/<your-username>/mass-block-x-users.git
+cd mass-block-x-users
+```
+
+Replace the URL with the address of this repository if it is different.
+
+### 3. Start the app using the helper script
+
+The repository includes scripts that set up a virtual environment, install the dependencies and launch the web server.
+
+#### macOS or Linux
+
+```bash
+./start.sh
+```
+
+If you get a "permission denied" error, run `chmod +x start.sh` once and try again.
+
+#### Windows
+
+```powershell
+.\start.ps1
+```
+
+If PowerShell blocks the script, run:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\start.ps1
+```
+
+The server will start on http://localhost:5000/.
+
+### 4. Use the app
+
+In your browser visit http://localhost:5000/.
+Upload a text file with one username per line and enter your `source_id` and `token` from X. Submit the form to block each user and review the results.
+
+## Manual setup (optional)
+
+If you prefer to set up the environment yourself:
+
+1. **Create and activate a virtual environment**
 
    ```bash
    python3 -m venv .venv
-   source .venv/bin/activate
+   source .venv/bin/activate       # macOS/Linux
    ```
 
-3. Install the dependencies:
+   ```powershell
+   py -3 -m venv .venv
+   .\.venv\Scripts\activate        # Windows
+   ```
+
+2. **Install dependencies**
 
    ```bash
    pip install -r requirements.txt
    ```
 
-### Windows
-
-Use the following commands in PowerShell to set up the project on Windows:
-
-```powershell
-git clone <repo-url>
-cd mass-block-x-users
-py -3 -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-```
-
-## Running the web application
-
-1. Set the Flask entry point:
+3. **Run the app**
 
    ```bash
-   export FLASK_APP=web_app.py
-   ```
-
-2. Start the development server:
-
-   ```bash
+   export FLASK_APP=web_app.py     # macOS/Linux
    flask run
    ```
 
-   The app will be available at http://localhost:5000/.
-
-3. In your browser, upload a text file containing one username per line and
-   provide the required `source_id` and `token`. Submit the form to block the
-   listed users. A results page will display the status for each user.
-
-   You can also run the app directly with Python:
-
-   ```bash
-   python web_app.py
+   ```powershell
+   set FLASK_APP=web_app.py        # Windows
+   flask run
    ```
-
-### Windows
-
-On Windows, configure and run the application with:
-
-```powershell
-set FLASK_APP=web_app.py
-flask run
-```
-
-The app will be available at http://localhost:5000/.
-
-You can also run the app directly with:
-
-```powershell
-python web_app.py
-```
 
 ## Tests
 
@@ -97,4 +106,3 @@ docker run --rm -p 5000:5000 mass-block-x-users
 ```
 
 The application is exposed on port 5000.
-
