@@ -6,6 +6,7 @@ called for each username and that the results mapping reports success.
 """
 
 import io
+
 from typing import List, Dict
 
 import block
@@ -40,10 +41,12 @@ def test_block_from_text_stream(monkeypatch):
     calls: List[Dict] = []
     monkeypatch.setattr(block.requests, "post", make_fake_post(calls))
 
+
     file_obj = io.StringIO("alice\nbob\n")
     result = block.block_from_file(file_obj, "id", "token")
 
     assert result == {"alice": "blocked", "bob": "blocked"}
+
     assert len(calls) == 2
     for call in calls:
         assert call["url"] == "https://api.x.com/1.1/blocks/create.json"
@@ -55,6 +58,7 @@ def test_block_from_text_stream(monkeypatch):
 def test_block_from_binary_stream(monkeypatch):
     calls: List[Dict] = []
     monkeypatch.setattr(block.requests, "post", make_fake_post(calls))
+
 
     file_obj = io.BytesIO(b"alice\nbob\n")
     result = block.block_from_file(file_obj, "id", "token")

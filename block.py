@@ -5,6 +5,8 @@ import requests
 
 
 # List of SOL shill usernames provided by the user
+BLOCK_URL = "https://api.twitter.com/1.1/blocks/create.json"
+
 SOL_SHILLS = [
     "@0xSweep",
     "@0xzZyat",
@@ -298,6 +300,7 @@ SOL_SHILLS = [
 def block_from_file(
     file_obj: Iterable[str], source_id: str, token: str
 ) -> Dict[str, str]:
+
     """Block users listed in ``file_obj`` using the X web API.
 
     Parameters
