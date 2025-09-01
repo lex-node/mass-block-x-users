@@ -3,11 +3,24 @@ from block import block_from_file, SOL_SHILLS
 import os
 import threading
 import uuid
+from dataclasses import dataclass, field
+from typing import Dict, Optional
 
 app = Flask(__name__)
 
+@dataclass
+class Task:
+    """Simple structure to track background task state."""
+
+    status: str = "pending"
+    progress: Dict[str, int] = field(
+        default_factory=lambda: {"current": 0, "total": 0}
+    )
+    result: Optional[Dict[str, str]] = None
+
+
 # In-memory task tracking
-tasks: dict[str, dict] = {}
+tasks: Dict[str, Task] = {}
 tasks_lock = threading.Lock()
 
 FORM_TEMPLATE = """
@@ -75,19 +88,21 @@ def _block_sol_shills_task(task_id: str, source_id: str, token: str) -> None:
     total = len(SOL_SHILLS)
     results: dict[str, str] = {}
     with tasks_lock:
-        tasks[task_id]["status"] = "running"
-        tasks[task_id]["progress"] = {"current": 0, "total": total}
+        task = tasks[task_id]
+        task.status = "running"
+        task.progress = {"current": 0, "total": total}
     for idx, username in enumerate(SOL_SHILLS, start=1):
         partial = block_from_file([username], source_id, token)
         results.update(partial)
         with tasks_lock:
-            tasks[task_id]["progress"] = {"current": idx, "total": total}
+            tasks[task_id].progress = {"current": idx, "total": total}
         app.logger.info(
             "Task %s progress: %s/%s", task_id, idx, total
         )
     with tasks_lock:
-        tasks[task_id]["status"] = "finished"
-        tasks[task_id]["result"] = results
+        task = tasks[task_id]
+        task.status = "finished"
+        task.result = results
     app.logger.info("Task %s finished", task_id)
 
 
@@ -98,7 +113,7 @@ def block_sol_shills_route():
         token = request.form.get('token') or os.getenv('AUTH_TOKEN', '')
         task_id = str(uuid.uuid4())
         with tasks_lock:
-            tasks[task_id] = {"status": "pending"}
+            tasks[task_id] = Task()
         thread = threading.Thread(
             target=_block_sol_shills_task, args=(task_id, source_id, token), daemon=True
         )
@@ -116,15 +131,15 @@ def task_status(task_id: str):
         task = tasks.get(task_id)
     if not task:
         return jsonify({"error": "task not found"}), 404
-    if task.get("status") == "finished":
+    if task.status == "finished":
         return jsonify(
             {
-                "status": task["status"],
-                "progress": task.get("progress"),
-                "result": task.get("result"),
+                "status": task.status,
+                "progress": task.progress,
+                "result": task.result,
             }
         )
-    return jsonify({"status": task.get("status"), "progress": task.get("progress")})
+    return jsonify({"status": task.status, "progress": task.progress})
 
 
 if __name__ == '__main__':
