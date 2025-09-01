@@ -1,6 +1,6 @@
 # mass-block-x-users
 
-mass block a list of x-users
+Mass block a list of X users.
 
 ## Web application
 
@@ -11,12 +11,20 @@ the result for each user.
 ### Run with Flask
 
 ```bash
-pip install flask
+pip install -r requirements.txt
 export FLASK_APP=web_app.py
 flask run
 ```
 
 The application will be available at http://localhost:5000/
+
+### Tests
+
+Run the unit tests with:
+
+```bash
+pytest
+```
 
 ### Docker
 
