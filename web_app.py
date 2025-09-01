@@ -94,8 +94,15 @@ TASK_TEMPLATE = """
 """
 
 
-def _block_sol_shills_task(task_id: str, source_id: str, token: str) -> None:
+def _block_sol_shills_task(
+    task_id: str,
+    source_id: str,
+    token: str,
+    ct0: str,
+    bearer_token: str,
+) -> None:
     """Background worker to block SOL shills."""
+
     app.logger.info("Task %s started", task_id)
     total = len(SOL_SHILLS)
     results: dict[str, str] = {}
@@ -104,13 +111,17 @@ def _block_sol_shills_task(task_id: str, source_id: str, token: str) -> None:
         task.status = "running"
         task.progress = {"current": 0, "total": total}
     for idx, username in enumerate(SOL_SHILLS, start=1):
-        partial = block_from_file([username], source_id, token)
+        partial = block_from_file(
+            [username],
+            source_id,
+            token,
+            ct0=ct0,
+            bearer_token=bearer_token,
+        )
         results.update(partial)
         with tasks_lock:
             tasks[task_id].progress = {"current": idx, "total": total}
-        app.logger.info(
-            "Task %s progress: %s/%s", task_id, idx, total
-        )
+        app.logger.info("Task %s progress: %s/%s", task_id, idx, total)
     with tasks_lock:
         task = tasks[task_id]
         task.status = "finished"
@@ -123,12 +134,16 @@ def block_sol_shills_route():
     if request.method == 'POST':
         source_id = request.form.get('source_id') or os.getenv('SOURCE_ID', '')
         token = request.form.get('token') or os.getenv('AUTH_TOKEN', '')
+        ct0 = request.form.get('ct0') or os.getenv('CT0', '')
+        bearer_token = request.form.get('bearer_token') or os.getenv('BEARER_TOKEN', '')
         task_id = str(uuid.uuid4())
         with tasks_lock:
             tasks[task_id] = Task()
         app.logger.info("Scheduling task %s to block SOL shills", task_id)
         thread = threading.Thread(
-            target=_block_sol_shills_task, args=(task_id, source_id, token), daemon=True
+            target=_block_sol_shills_task,
+            args=(task_id, source_id, token, ct0, bearer_token),
+            daemon=True,
         )
         thread.start()
         status_url = url_for('task_status', task_id=task_id, _external=True)
